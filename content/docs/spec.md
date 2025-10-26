@@ -235,7 +235,7 @@ Protocol parameters are passed to the plugins via OS environment variables.
 - `CNI_PATH`: List of paths to search for CNI plugin executables. Paths are separated by an OS-specific list separator; for example ':' on Linux and ';' on Windows
 
 ### Errors
-A plugin must exit with a return code of 0 on success, and non-zero on failure. If the plugin encounters an error, it should output an ["error" result structure](#Error) (see below).
+A plugin must exit with a return code of 0 on success, and non-zero on failure. If the plugin encounters an error, it should output an ["error" result structure](#error) (see below).
 
 ### CNI operations
 
@@ -247,7 +247,7 @@ A CNI plugin, upon receiving an `ADD` command, should either
 - create the interface defined by `CNI_IFNAME` inside the container at `CNI_NETNS`, or
 - adjust the configuration of the interface defined by `CNI_IFNAME` inside the container at `CNI_NETNS`.
 
-If the CNI plugin is successful, it must output a [result structure](#Success) (see below) on standard out. If the plugin was supplied a `prevResult` as part of its input configuration, it MUST handle `prevResult` by either passing it through, or modifying it appropriately.
+If the CNI plugin is successful, it must output a [result structure](#add-success) (see below) on standard out. If the plugin was supplied a `prevResult` as part of its input configuration, it MUST handle `prevResult` by either passing it through, or modifying it appropriately.
 
 If an interface of the requested name already exists in the container, the CNI plugin MUST return with an error.
 
@@ -339,7 +339,7 @@ All parameters, with the exception of `CNI_PATH`, must be the same as the corres
 #### `STATUS`: Check plugin status
 `STATUS` is a way for a runtime to determine the readiness of a network plugin.
 
-A plugin must exit with a zero (success) return code if the plugin is ready to service ADD requests. If the plugin knows that it is not able to service ADD requests, it must exit with a non-zero return code and output an error on standard out (see below).
+A plugin must exit with a zero (success) return code if the plugin is ready to service ADD requests. If the plugin knows that it is not able to service ADD requests, it must exit with a non-zero return code and output an [error on standard out](#error) (see below).
 
 For example, if a plugin relies on an external service or daemon, it should return an error to `STATUS` if that service is unavailable. Likewise, if a plugin has a limited number of resources (e.g. IP addresses, hardware queues), it should return an error if those resources are exhausted and no new `ADD` requests can be serviced.
 
@@ -362,7 +362,7 @@ Optional environment parameters:
 
 
 #### `VERSION`: probe plugin version support
-The plugin should output via standard-out a json-serialized version result object (see below).
+The plugin should output via standard-out a json-serialized [version result object](#version-success) (see below).
 
 **Input:**
 
@@ -402,7 +402,7 @@ Required environment parameters:
 - `CNI_PATH`
 
 **Output:**
-No output on success, ["error" result structure](#Error) on error.
+No output on success, ["error" result structure](#error) on error.
 
 
 ## Section 3: Execution of Network Configurations
